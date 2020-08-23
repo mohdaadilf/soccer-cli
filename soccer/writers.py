@@ -18,9 +18,7 @@ def get_writer(output_format='stdout', output_file=None):
     return globals()[output_format.capitalize()](output_file)
 
 
-class BaseWriter(object):
-
-    __metaclass__ = ABCMeta
+class BaseWriter(object, metaclass=ABCMeta):
 
     def __init__(self, output_file):
         self.output_filename = output_file
@@ -96,8 +94,8 @@ class Stdout(BaseWriter):
                     ("N.",  "NAME", "POSITION", "NATIONALITY", "BIRTHDAY"),
                     bold=True,
                     fg=self.colors.MISC)
-        fmt = (u"{shirtNumber!r:<6} {name:<28} {position:<23} {nationality:<23}"
-               u" {dateOfBirth:<18}")
+        fmt = ("{shirtNumber!r:<6} {name:<28} {position:<23} {nationality:<23}"
+               " {dateOfBirth:<18}")
         for player in team:
             if player["role"] == "PLAYER":
                 click.secho(fmt.format(**player), bold=True)
@@ -117,8 +115,8 @@ class Stdout(BaseWriter):
             el_upper, el_lower = LEAGUE_PROPERTIES[league]['el']
             rl_upper, rl_lower = LEAGUE_PROPERTIES[league]['rl']
             team['teamName'] = team['team']['name']
-            team_str = (u"{position:<7} {teamName:<33} {playedGames:<12}"
-                        u" {goalDifference:<14} {points}").format(**team)
+            team_str = ("{position:<7} {teamName:<33} {playedGames:<12}"
+                        " {goalDifference:<14} {points}").format(**team)
             if cl_upper <= team["position"] <= cl_lower:
                 click.secho(team_str, bold=True, fg=self.colors.CL_POSITION)
             elif el_upper <= team["position"] <= el_lower:
@@ -209,12 +207,12 @@ class Csv(BaseWriter):
     def generate_output(self, result):
         if not self.output_filename:
             for row in result:
-                click.echo(u','.join(unicode(item) for item in row))
+                click.echo(','.join(str(item) for item in row))
         else:
             with open(self.output_filename, 'w') as csv_file:
                 writer = csv.writer(csv_file)
                 for row in result:
-                    row = [unicode(s).encode('utf-8') for s in row]
+                    row = [str(s).encode('utf-8') for s in row]
                     writer.writerow(row)
 
     def live_scores(self, live_scores):
