@@ -33,7 +33,7 @@ class TestLoadData(unittest.TestCase):
     def test_load_league_ids(self):
         try:
             leage_ids = leagueids.LEAGUE_IDS
-            leage_ids.keys()
+            list(leage_ids.keys())
         except AttributeError:
             self.fail("File doesn't exist!")
 
